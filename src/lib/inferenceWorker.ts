@@ -7,12 +7,8 @@ ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.2/di
 let session: ort.InferenceSession | null = null;
 let isInitializing = false;
 
-// Web workers need absolute URLs to fetch
-const getAbsoluteUrl = (path: string) => {
-    return new URL(path, self.location.origin).href;
-};
-
-const MODEL_PATH = getAbsoluteUrl("/models/lama_fp32.onnx");
+// We use a reliable public CDN (Hugging Face) to host the 198MB LaMa model so it doesn't need to be in the repo
+const MODEL_PATH = "https://huggingface.co/Carve/LaMa-ONNX/resolve/main/lama_fp32.onnx";
 
 async function initModel() {
     if (session || isInitializing) return;
