@@ -162,6 +162,26 @@ export default function ImageCanvas() {
     reader.onload = (event) => {
       const img = new Image();
       img.onload = () => {
+        // Mobile browsers crash with huge 4K+ canvases in RAM. Cap to 2048px maximum dimension.
+        const MAX_DIMENSION = 2048;
+        if (img.naturalWidth > MAX_DIMENSION || img.naturalHeight > MAX_DIMENSION) {
+          const ratio = Math.min(MAX_DIMENSION / img.naturalWidth, MAX_DIMENSION / img.naturalHeight);
+          const newWidth = Math.round(img.naturalWidth * ratio);
+          const newHeight = Math.round(img.naturalHeight * ratio);
+
+          const tempCanvas = document.createElement("canvas");
+          tempCanvas.width = newWidth;
+          tempCanvas.height = newHeight;
+          const ctx = tempCanvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+            const downscaledImg = new Image();
+            downscaledImg.onload = () => setImage(downscaledImg);
+            downscaledImg.src = tempCanvas.toDataURL("image/jpeg", 0.95);
+            return;
+          }
+        }
+
         setImage(img);
       };
       img.src = event.target?.result as string;
