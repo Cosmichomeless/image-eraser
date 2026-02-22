@@ -124,7 +124,7 @@ export default function ImageCanvas() {
         tempPatchCanvas.height = cropBox.h;
         const tempCtx = tempPatchCanvas.getContext("2d");
 
-        if (tempCtx) {
+        if (tempCtx && maskCanvasRef.current) {
           // Draw upscaled AI result over the temp canvas (which is cropBox sized)
           tempCtx.drawImage(resultImg, 0, 0, cropBox.w, cropBox.h);
 
