@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🪄 Magic Eraser
 
-## Getting Started
+A 100% Client-Side, fully private AI object removal app built with Next.js, Tailwind CSS, and ONNX Runtime Web. 
 
-First, run the development server:
+Erase unwanted objects from your photos flawlessly—**directly in your browser**.
+
+---
+
+## 🚀 Features
+
+- **100% Client-Side Processing**: No servers, no APIs, zero cost. Everything runs natively on your machine using WebAssembly and WebGPU.
+- **Privacy First**: Your photos never leave your device.
+- **High-Definition Inpainting**: Crops to your exact mask to preserve original 4K/HD image resolutions instead of shrinking the entire photo.
+- **Sequential Erasing**: Erase as many times as you want on the same image without resetting.
+- **Beautiful UI**: Modern, glassmorphic design built with Tailwind CSS and Next.js App Router.
+- **Hardware Accelerated**: Uses `onnxruntime-web` to tap directly into your machine's WebAssembly limits for near-instant offline AI.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS
+- **Machine Learning**: ONNX Runtime Web (`onnxruntime-web`)
+- **Model**: LaMa (Large Mask Inpainting) FP32
+- **Icons**: Lucide React
+
+---
+
+## 📦 Getting Started
+
+### 1. Requirements
+Ensure you have Node.js (v18+) installed.
+
+### 2. Installation
+Clone the repository and install the dependencies:
+
+```bash
+git clone https://github.com/your-username/magic-eraser.git
+cd magic-eraser
+npm install
+```
+
+### 3. Download the AI Model
+This app requires the ONNX LaMa model to run the magic eraser logic.
+
+1. Download the `lama_fp32.onnx` model (you can find quantized LaMa ONNX models on Hugging Face or similar ML model hubs).
+2. Place the downloaded file inside the `public/models/` directory of this project:
+
+```text
+magic-eraser/
+├── public/
+│   └── models/
+│       └── lama_fp32.onnx   <-- Place it here!
+```
+
+### 4. Run the Development Server
+
+Start the local server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎨 How to Use
 
-## Learn More
+1. **Upload an Image**: Click the "Upload Image" button or drag and drop your photo into the canvas.
+2. **Brush**: Adjust the brush size using the slider.
+3. **Paint**: Paint over the object, person, or text you want to vanish.
+4. **Erase**: Click the **Magic Erase** button and watch it disappear.
+5. **Download**: Click the **Download** button to save the seamlessly edited high-resolution photo.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🤝 Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/your-username/magic-eraser/issues).
 
-## Deploy on Vercel
+## 📄 License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*Powered by Next.js, Tailwind CSS & onnxruntime-web.*
