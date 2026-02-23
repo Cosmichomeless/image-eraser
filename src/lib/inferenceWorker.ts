@@ -5,36 +5,41 @@ ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.24.2/di
 
 // We'll keep a reference to the loaded session to reuse it
 let session: ort.InferenceSession | null = null;
-let isInitializing = false;
+let initPromise: Promise<void> | null = null;
 
 // We use a reliable public CDN (Hugging Face) to host the 198MB LaMa model so it doesn't need to be in the repo
 const MODEL_PATH = "https://huggingface.co/Carve/LaMa-ONNX/resolve/main/lama_fp32.onnx";
 
-async function initModel() {
-    if (session || isInitializing) return;
-    isInitializing = true;
-    try {
-        session = await ort.InferenceSession.create(MODEL_PATH, {
-            executionProviders: ["wasm"],
-            graphOptimizationLevel: "all",
-        });
-        self.postMessage({ type: "init-done" });
-    } catch (error) {
-        console.warn("WebGPU failed, falling back to Wasm", error);
+function initModel(): Promise<void> {
+    if (session) return Promise.resolve();
+    if (initPromise) return initPromise;
+
+    initPromise = (async () => {
         try {
             session = await ort.InferenceSession.create(MODEL_PATH, {
                 executionProviders: ["wasm"],
                 graphOptimizationLevel: "all",
             });
             self.postMessage({ type: "init-done" });
-        } catch (fallbackError: any) {
-            console.error("Failed to load model:", fallbackError);
-            const errMsg = fallbackError?.message || fallbackError?.toString() || "Unknown error";
-            self.postMessage({ type: "error", error: "Failed to load ONNX model. Reason: " + errMsg });
+        } catch (error) {
+            console.warn("WebGPU failed, falling back to Wasm", error);
+            try {
+                session = await ort.InferenceSession.create(MODEL_PATH, {
+                    executionProviders: ["wasm"],
+                    graphOptimizationLevel: "all",
+                });
+                self.postMessage({ type: "init-done" });
+            } catch (fallbackError: any) {
+                console.error("Failed to load model:", fallbackError);
+                const errMsg = fallbackError?.message || fallbackError?.toString() || "Unknown error";
+                self.postMessage({ type: "error", error: "Failed to load ONNX model. Reason: " + errMsg });
+            }
+        } finally {
+            initPromise = null;
         }
-    } finally {
-        isInitializing = false;
-    }
+    })();
+
+    return initPromise;
 }
 
 // Helper to convert DataURL to ImageData
